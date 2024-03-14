@@ -8,6 +8,7 @@ RUN wget https://github.com/prometheus-community/elasticsearch_exporter/releases
 RUN tar -xzf elasticsearch_exporter-1.7.0.linux-amd64.tar.gz
 RUN mv elasticsearch_exporter-*/elasticsearch_exporter /bin
 
+# PushProx
 RUN wget https://github.com/prometheus-community/PushProx/releases/download/v0.1.0/PushProx-0.1.0.linux-amd64.tar.gz
 RUN tar -xzf PushProx-0.1.0.linux-amd64.tar.gz
 RUN mv PushProx-0.1.0.linux-amd64/pushprox-client /bin

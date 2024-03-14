@@ -21,7 +21,7 @@ fi
 # Remove http:// or https:// from ELASTIC_URL if present
 ELASTIC_URL_CLEAN=$(echo "$ELASTIC_URL" | sed -e 's/^http[s]*:\/\///')
 
-echo "Cleaned ELASTIC_URL: $ELASTIC_URL_CLEAN"
+echo "Clean ELASTIC_URL: $ELASTIC_URL_CLEAN"
 echo "Protocol: $PROTOCOL"
 
 # Set ELASTIC_URL to cleaned value
