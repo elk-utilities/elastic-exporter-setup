@@ -6,18 +6,20 @@ if [ -z "$ELASTIC_URL" ]; then
     exit 1
 fi
 
+if [ -z "$PROTOCOL" ]; then
+    # Store protocol in PROTOCOL variable
+    if [[ "$ELASTIC_URL" == https://* ]]; then
+        PROTOCOL="https"
+    elif [[ "$ELASTIC_URL" == http://* ]]; then
+        PROTOCOL="http"
+    else
+        echo "Protocol not found in ELASTIC_URL. Using unsafe protocol."
+        PROTOCOL="http"
+    fi
+fi
+
 # Remove http:// or https:// from ELASTIC_URL if present
 ELASTIC_URL_CLEAN=$(echo "$ELASTIC_URL" | sed -e 's/^http[s]*:\/\///')
-
-# Store protocol in PROTOCOL variable
-if [[ "$ELASTIC_URL" == https://* ]]; then
-    PROTOCOL="https"
-elif [[ "$ELASTIC_URL" == http://* ]]; then
-    PROTOCOL="http"
-else
-    echo "Protocol not found in ELASTIC_URL. Using unsafe protocol."
-    PROTOCOL="http"
-fi
 
 echo "Cleaned ELASTIC_URL: $ELASTIC_URL_CLEAN"
 echo "Protocol: $PROTOCOL"
