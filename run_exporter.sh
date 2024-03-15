@@ -26,7 +26,7 @@ echo "Protocol: $PROTOCOL"
 
 # Set ELASTIC_URL to cleaned value
 export ELASTIC_URL="$ELASTIC_URL_CLEAN"
-export PROTOCOL="$ELASTIC_URL_CLEAN"
+export PROTOCOL
 
 echo "ELASTIC_URL updated."
 
