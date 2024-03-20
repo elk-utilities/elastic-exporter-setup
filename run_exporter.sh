@@ -1,5 +1,7 @@
 #!/bin/bash
 
+delay=10
+
 # Check if ELASTIC_URL environment variable is set
 if [ -z "$ELASTIC_URL" ]; then
     echo "ELASTIC_URL environment variable is not set."
@@ -13,7 +15,7 @@ if [ -z "$PROTOCOL" ]; then
     elif [[ "$ELASTIC_URL" == http://* ]]; then
         PROTOCOL="http"
     else
-        echo "Protocol not found in ELASTIC_URL. Using unsafe protocol."
+        echo "Protocol not found in ELASTIC_URL. Using unsafe protocol (http)."
         PROTOCOL="http"
     fi
 fi
@@ -21,14 +23,33 @@ fi
 # Remove http:// or https:// from ELASTIC_URL if present
 ELASTIC_URL_CLEAN=$(echo "$ELASTIC_URL" | sed -e 's/^http[s]*:\/\///')
 
-echo "Clean ELASTIC_URL: $ELASTIC_URL_CLEAN"
-echo "Protocol: $PROTOCOL"
-
 # Set ELASTIC_URL to cleaned value
 export ELASTIC_URL="$ELASTIC_URL_CLEAN"
 export PROTOCOL
 
-echo "ELASTIC_URL updated."
+echo "Initializing monitoring instance..."
+
+MACHINE_NAME=$(hostname)
+
+response=$(curl -F instance_id=$MACHINE_NAME -X POST http://$PROXY_IP:443/monitoring/create_instance/$TOKEN)
+
+port=$(echo "$response" | jq -r '.port')
+
+echo "#"
+echo "#"
+echo "#"
+echo "#"
+echo "#"
+echo "# Your Grafana instance is now up!"
+echo "# You can access it from your browser at http://$PROXY_IP:$port/"
+echo "#"
+echo "#"
+echo "#"
+echo "#"
+echo "#"
+echo "The exporter will initialize after $delay seconds."
+
+sleep $delay
 
 echo "Initializing exporter..."
 

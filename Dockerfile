@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # Dockerfile for combining multiple services
 FROM ubuntu:latest
-RUN apt-get update && apt-get install -y supervisor wget
+RUN apt-get update && apt-get install -y supervisor wget curl jq
 
 # Elasticsearch Exporter
 RUN wget https://github.com/prometheus-community/elasticsearch_exporter/releases/download/v1.7.0/elasticsearch_exporter-1.7.0.linux-amd64.tar.gz
