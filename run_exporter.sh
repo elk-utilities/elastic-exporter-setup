@@ -27,29 +27,34 @@ ELASTIC_URL_CLEAN=$(echo "$ELASTIC_URL" | sed -e 's/^http[s]*:\/\///')
 export ELASTIC_URL="$ELASTIC_URL_CLEAN"
 export PROTOCOL
 
-echo "Initializing monitoring instance..."
+if [ -z "$ENVIROMENT_ALREADY_SETUP" ]; then
+    echo "Initializing monitoring instance..."
 
-MACHINE_NAME=$(hostname)
+    MACHINE_NAME=$(hostname)
 
-response=$(curl -F instance_id=$MACHINE_NAME -X POST http://$PROXY_IP:443/monitoring/create_instance/$TOKEN)
+    response=$(curl -F instance_id=$MACHINE_NAME -X POST http://$PROXY_IP:443/monitoring/create_instance/$TOKEN)
 
-port=$(echo "$response" | jq -r '.port')
+    port=$(echo "$response" | jq -r '.port')
 
-echo "#"
-echo "#"
-echo "#"
-echo "#"
-echo "#"
-echo "# Your Grafana instance is now up!"
-echo "# You can access it from your browser at http://$PROXY_IP:$port/"
-echo "#"
-echo "#"
-echo "#"
-echo "#"
-echo "#"
-echo "The exporter will initialize after $delay seconds."
+    echo "#"
+    echo "#"
+    echo "#"
+    echo "#"
+    echo "#"
+    echo "# Your Grafana instance is now up!"
+    echo "# You can access it from your browser at http://$PROXY_IP:$port/"
+    echo "#"
+    echo "#"
+    echo "#"
+    echo "#"
+    echo "#"
+    echo "The exporter will initialize after $delay seconds."
 
-sleep $delay
+    sleep $delay
+
+    ENVIROMENT_ALREADY_SETUP=true
+    export ENVIROMENT_ALREADY_SETUP
+fi
 
 echo "Initializing exporter..."
 
