@@ -27,7 +27,7 @@ ELASTIC_URL_CLEAN=$(echo "$ELASTIC_URL" | sed -e 's/^http[s]*:\/\///')
 export ELASTIC_URL="$ELASTIC_URL_CLEAN"
 export PROTOCOL
 
-if [ -z "$ENVIROMENT_ALREADY_SETUP" ]; then
+if [ -z "$ENVIROMENT_ALREADY_SETUP" ] || [ "$ENVIROMENT_ALREADY_SETUP" != "true" ]; then
     echo "Initializing monitoring instance..."
 
     MACHINE_NAME=$(hostname)
