@@ -49,7 +49,7 @@ if [ -z "$ENVIROMENT_ALREADY_SETUP" ] || [ "$ENVIROMENT_ALREADY_SETUP" != "true"
 
     MACHINE_NAME=$(hostname)
 
-    response=$(curl -F instance_id=$MACHINE_NAME -X POST $PROXY_PROTOCOL://$PROXY_IP:443/monitoring/create_instance/$TOKEN)
+    response=$(curl -F instance_id=$MACHINE_NAME -X POST $PROXY_PROTOCOL://$PROXY_IP/api/monitoring/create_instance/$TOKEN)
 
     port=$(echo "$response" | jq -r '.port')
 
