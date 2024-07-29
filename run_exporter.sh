@@ -44,8 +44,20 @@ export PROTOCOL
 export PROXY_IP="$PROXY_IP_CLEAN"
 export PROXY_PROTOCOL
 
+# Get IP from the Proxy
+# Check if DOMAIN is an IP address
+if [[ $PROXY_IP_CLEAN =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  # DOMAIN is an IP address, use it as is
+  IP=$PROXY_IP_CLEAN
+else
+  # DOMAIN is a domain name, resolve to IP
+  IP=$(getent hosts $PROXY_IP_CLEAN | awk '{ print $1 }')
+fi
+
+export IP
+
 if [ -z "$ENVIROMENT_ALREADY_SETUP" ] || [ "$ENVIROMENT_ALREADY_SETUP" != "true" ]; then
-    echo "Initializing monitoring instance..."
+    echo "Making Request to initialize monitoring instance..."
 
     MACHINE_NAME=$(hostname)
 
@@ -53,29 +65,30 @@ if [ -z "$ENVIROMENT_ALREADY_SETUP" ] || [ "$ENVIROMENT_ALREADY_SETUP" != "true"
 
     port=$(echo "$response" | jq -r '.port')
 
-    if [ "$port" == "null" ]; then
+    if [ -z "$port" ]; then
         echo "Error while retrieving port from the proxy. (Are the enviroment variables correct?)"
         exit 1
     fi
 
-    echo "#"
-    echo "#"
-    echo "#"
-    echo "#"
-    echo "#"
-    echo "# Your Grafana instance is now up!"
-    echo "# You can access it from your browser at $PROXY_PROTOCOL://$PROXY_IP/instance-$port/"
-    echo "#"
-    echo "#"
-    echo "#"
-    echo "#"
-    echo "#"
-    echo "The exporter will initialize after $delay seconds."
+    if [ "$port" != "null" ]; then
+        echo "#"
+        echo "#"
+        echo "#"
+        echo "#"
+        echo "#"
+        echo "# Your Grafana instance is now up!"
+        echo "# You can access it from your browser at $PROXY_PROTOCOL://$PROXY_IP/instance-$port/"
+        echo "#"
+        echo "#"
+        echo "#"
+        echo "#"
+        echo "#"
+        echo "The exporter will initialize after $delay seconds."
 
-    sleep $delay
+        sleep $delay
+    fi
 
-    ENVIROMENT_ALREADY_SETUP=true
-    export ENVIROMENT_ALREADY_SETUP
+    export ENVIROMENT_ALREADY_SETUP="true"
 fi
 
 echo "Initializing exporter..."
