@@ -32,10 +32,10 @@ else
 fi
 
 # Remove http:// or https:// from ELASTIC_URL if present
-ELASTIC_URL_CLEAN=$(echo "$ELASTIC_URL" | sed -e 's/^http[s]*:\/\///')
+ELASTIC_URL_CLEAN=$(echo "$ELASTIC_URL" | sed -E 's~^https?://~~')
 
 # Remove http:// or https:// from PROXY_IP if present
-PROXY_IP_CLEAN=$(echo "$PROXY_IP" | sed -e 's/^http[s]*:\/\///')
+PROXY_IP_CLEAN=$(echo "$PROXY_IP" | sed -E 's~^https?://~~')
 
 # Set ELASTIC_URL to cleaned value
 export ELASTIC_URL="$ELASTIC_URL_CLEAN"
@@ -51,7 +51,7 @@ if [[ $PROXY_IP_CLEAN =~ ^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   IP=$PROXY_IP_CLEAN
 else
   # DOMAIN is a domain name, resolve to IP
-  IP=$(getent hosts $PROXY_IP_CLEAN | awk '{ print $1 }')
+  IP=$(getent hosts $PROXY_IP_CLEAN | awk '{ print $1 }' | sed -E 's/^::ffff://; /^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/!d')
 fi
 
 export IP
