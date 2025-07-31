@@ -35,7 +35,7 @@ log() {
 check_connectivity() {
     local url=$1
     local service_name=$2
-    log "INFO" "Checking connection to $service_name"
+    log "INFO" "Checking connection to $service_name."
     if ! curl --head --silent --fail --connect-timeout "$connect_timeout" "$url" > /dev/null; then
         log "ERROR" "Could not connect to $service_name."
         log "ERROR" "Please check the URL, network connectivity, and ensure the service is running."
@@ -55,6 +55,12 @@ fi
 if [ -z "${PROXY_IP-}" ]; then
     log "ERROR" "PROXY_IP environment variable is not set."
     exit 1
+fi
+
+if [ -z "${EXPORTER_TIMEOUT-}" ]; then
+    log "WARNING" "EXPORTER_TIMEOUT environment variable is not set. Making default value to 60s."
+    EXPORTER_TIMEOUT="60s"
+    export EXPORTER_TIMEOUT
 fi
 
 if [ -z "${TOKEN-}" ]; then
@@ -202,7 +208,7 @@ if [ -z "${ENVIROMENT_ALREADY_SETUP-}" ] || [ "$ENVIROMENT_ALREADY_SETUP" != "tr
         log "ERROR" "Please try again in a few moments. If the problem persists, contact support."
         rm "$response_body_file"
         exit 1
-    elif [ "$http_status" -ne 200 ]; then
+    elif [ "$http_status" -ne 201 ]; then
         log "ERROR" "An unexpected error occurred. The server responded with HTTP status $http_status."
         log "ERROR" "Server response:"
         cat "$response_body_file"
